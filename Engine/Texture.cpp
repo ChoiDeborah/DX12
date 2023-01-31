@@ -25,7 +25,8 @@ void Texture::Load(const wstring& path)
 		::LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, nullptr, _image);
 
 	HRESULT hr = ::CreateTexture(DEVICE.Get(), _image.GetMetadata(), &_tex2D);
-	assert(SUCCEEDED(hr));
+	if (FAILED(hr))
+		assert(nullptr);
 
 	vector<D3D12_SUBRESOURCE_DATA> subResources;
 
@@ -35,7 +36,8 @@ void Texture::Load(const wstring& path)
 		_image.GetMetadata(),
 		subResources);
 
-	assert(SUCCEEDED(hr));
+	if (FAILED(hr))
+		assert(nullptr);
 
 	const uint64 bufferSize = ::GetRequiredIntermediateSize(_tex2D.Get(), 0, static_cast<uint32>(subResources.size()));
 
@@ -51,7 +53,8 @@ void Texture::Load(const wstring& path)
 		nullptr,
 		IID_PPV_ARGS(textureUploadHeap.GetAddressOf()));
 
-	assert(SUCCEEDED(hr));
+	if (FAILED(hr))
+		assert(nullptr);
 
 	::UpdateSubresources(RESOURCE_CMD_LIST.Get(),
 		_tex2D.Get(),
@@ -95,7 +98,7 @@ void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height,
 	}
 	else if (resFlags & D3D12_RESOURCE_FLAGS::D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
 	{
-		resourceStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
+		resourceStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 		float arrFloat[4] = { clearColor.x, clearColor.y, clearColor.z, clearColor.w };
 		optimizedClearValue = CD3DX12_CLEAR_VALUE(format, arrFloat);
 	}

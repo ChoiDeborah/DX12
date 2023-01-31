@@ -18,7 +18,7 @@ void Timer::Update()
 	_frameCount++;
 	_frameTime += _deltaTime;
 
-	if (_frameTime >= 1.f)
+	if (_frameTime > 1.f)
 	{
 		_fps = static_cast<uint32>(_frameCount / _frameTime);
 
