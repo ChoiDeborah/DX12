@@ -12,6 +12,7 @@
 
 #include "TestCameraScript.h"
 #include "Resources.h"
+#include "ParticleSystem.h"
 
 void SceneManager::Update()
 {
@@ -249,6 +250,17 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->GetLight()->SetLightAngle(3.14f / 2);
 
 		scene->AddGameObject(light);
+	}
+#pragma endregion
+
+#pragma region ParticleSystem
+	{
+		shared_ptr<GameObject> particle = make_shared<GameObject>();
+		particle->AddComponent(make_shared<Transform>());
+		particle->AddComponent(make_shared<ParticleSystem>());
+		particle->SetCheckFrustum(false);
+		particle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 100.f));
+		scene->AddGameObject(particle);
 	}
 #pragma endregion
 
