@@ -14,6 +14,9 @@
 #include <map>
 using namespace std;
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 #include "d3dx12.h"
 #include "SimpleMath.h"
 #include <d3d12.h>
@@ -27,11 +30,10 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
-#include <filesystem>
-namespace fs = std::filesystem;
-
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
+
+#include "FBX/fbxsdk.h"
 
 // 각종 lib
 #pragma comment(lib, "d3d12")
@@ -43,6 +45,16 @@ namespace fs = std::filesystem;
 #pragma comment(lib, "DirectXTex\\DirectXTex_debug.lib")
 #else
 #pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+#endif
+
+#ifdef _DEBUG
+#pragma comment(lib, "FBX\\debug\\libfbxsdk-md.lib")
+#pragma comment(lib, "FBX\\debug\\libxml2-md.lib")
+#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
+#else
+#pragma comment(lib, "FBX\\release\libfbxsdk-md.lib")
+#pragma comment(lib, "FBX\\release\libxml2-md.lib")
+#pragma comment(lib, "FBX\\release\\zlib-md.lib")
 #endif
 
 // 각종 typedef
@@ -69,7 +81,6 @@ enum class CBV_REGISTER : uint8
 
 	END
 };
-
 
 enum class SRV_REGISTER : uint8
 {
@@ -129,6 +140,8 @@ struct Vertex
 	Vec2 uv;
 	Vec3 normal;
 	Vec3 tangent;
+	Vec4 weights;
+	Vec4 indices;
 };
 
 #define DECLARE_SINGLE(type)		\
@@ -168,3 +181,7 @@ struct TransformParams
 };
 
 extern unique_ptr<class Engine> GEngine;
+
+// Utils
+wstring s2ws(const string& s);
+string ws2s(const wstring& s);
